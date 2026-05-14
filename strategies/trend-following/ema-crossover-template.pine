@@ -1,0 +1,58 @@
+// ============================================================
+// TEMPLATE: EMA Crossover Strategy
+// Autor: ProfIAsorLeo
+// GitHub: https://github.com/ProfIAsorLeo/trading-strategies
+// Versao: 1.0.0
+//
+// DESCRICAO:
+// Estrategia de cruzamento de EMAs para identificar tendencias.
+// Compra quando a EMA rapida cruza acima da EMA lenta.
+// Vende quando a EMA rapida cruza abaixo da EMA lenta.
+//
+// PARAMETROS RECOMENDADOS:
+// - Timeframe: 1H, 4H
+// - Ativos: Crypto (BTC, ETH) e Forex
+// ============================================================
+
+//@version=5
+strategy("EMA Crossover Strategy", overlay=true, initial_capital=1000, default_qty_type=strategy.percent_of_equity, default_qty_value=10)
+
+// ============================================================
+// INPUTS
+// ============================================================
+ema_fast_len = input.int(9, title="EMA Rapida", minval=1, group="Configuracoes das EMAs")
+ema_slow_len = input.int(21, title="EMA Lenta", minval=1, group="Configuracoes das EMAs")
+show_emas = input.bool(true, title="Exibir EMAs no Grafico", group="Visual")
+
+// ============================================================
+// CALCULOS
+// ============================================================
+ema_fast = ta.ema(close, ema_fast_len)
+ema_slow = ta.ema(close, ema_slow_len)
+
+// Sinais de cruzamento
+bullish_cross = ta.crossover(ema_fast, ema_slow)
+bearish_cross = ta.crossunder(ema_fast, ema_slow)
+
+// ============================================================
+// ENTRADAS E SAIDAS
+// ============================================================
+if bullish_cross
+    strategy.entry("Long", strategy.long)
+
+    if bearish_cross
+        strategy.close("Long")
+
+        // ============================================================
+        // PLOTAGEM VISUAL
+        // ============================================================
+        plot(show_emas ? ema_fast : na, title="EMA Rapida", color=color.new(color.blue, 0), linewidth=2)
+        plot(show_emas ? ema_slow : na, title="EMA Lenta", color=color.new(color.orange, 0), linewidth=2)
+
+        // Marcadores de sinais
+        plotshape(bullish_cross, title="Sinal de Compra", location=location.belowbar, color=color.green, style=shape.triangleup, size=size.small)
+        plotshape(bearish_cross, title="Sinal de Venda", location=location.abovebar, color=color.red, style=shape.triangledown, size=size.small)
+
+        // Background colorido pela tendencia
+        trend_color = ema_fast > ema_slow ? color.new(color.green, 90) : color.new(color.red, 90)
+        bgcolor(trend_color, title="Background de Tendencia")
