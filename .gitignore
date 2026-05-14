@@ -1,0 +1,32 @@
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores e IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos de backup e temporarios
+*.bak
+*.tmp
+*.swp
+*~
+
+# Logs e relatorios
+*.log
+logs/
+
+# Dados sensiveis e configuracoes locais
+.env
+.env.local
+
+# Arquivos de exportacao do TradingView
+*.csv
+*.xlsx
+
+# Node (caso use ferramentas JS de suporte)
+node_modules/
+npm-debug.log*
